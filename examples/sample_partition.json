@@ -1,0 +1,200 @@
+{
+  "name": "SampleMCPDesign",
+  "description": "A representative 3-die MCP design: Compute, Memory, and IO tiles.",
+  "partitions": {
+    "COMPUTE": {
+      "name": "COMPUTE",
+      "die_type": "compute",
+      "area_mm2": 45.2,
+      "power_mw": 8500.0,
+      "cell_count": 4200000,
+      "flip_flop_count": 1050000,
+      "combinational_cell_count": 3150000,
+      "process_node": "3nm",
+      "metadata": {
+        "team": "Core Architecture",
+        "revision": "A2"
+      }
+    },
+    "MEMORY": {
+      "name": "MEMORY",
+      "die_type": "memory",
+      "area_mm2": 38.7,
+      "power_mw": 3200.0,
+      "cell_count": 800000,
+      "flip_flop_count": 80000,
+      "combinational_cell_count": 720000,
+      "process_node": "5nm",
+      "metadata": {
+        "team": "Memory Subsystem",
+        "revision": "B1"
+      }
+    },
+    "IO": {
+      "name": "IO",
+      "die_type": "io",
+      "area_mm2": 22.1,
+      "power_mw": 1800.0,
+      "cell_count": 350000,
+      "flip_flop_count": 70000,
+      "combinational_cell_count": 280000,
+      "process_node": "7nm",
+      "metadata": {
+        "team": "IO Subsystem",
+        "revision": "C1"
+      }
+    }
+  },
+  "signals": [
+    {
+      "name": "clk_core",
+      "source_partition": "COMPUTE",
+      "sink_partitions": ["COMPUTE", "MEMORY"],
+      "width": 1,
+      "frequency_mhz": 3200.0,
+      "is_clock": true,
+      "is_reset": false,
+      "timing_critical": true
+    },
+    {
+      "name": "clk_io",
+      "source_partition": "IO",
+      "sink_partitions": ["IO", "COMPUTE"],
+      "width": 1,
+      "frequency_mhz": 800.0,
+      "is_clock": true,
+      "is_reset": false,
+      "timing_critical": false
+    },
+    {
+      "name": "rst_n",
+      "source_partition": "IO",
+      "sink_partitions": ["IO", "COMPUTE", "MEMORY"],
+      "width": 1,
+      "frequency_mhz": 0.0,
+      "is_clock": false,
+      "is_reset": true,
+      "timing_critical": false
+    },
+    {
+      "name": "mem_data_bus",
+      "source_partition": "COMPUTE",
+      "sink_partitions": ["MEMORY"],
+      "width": 256,
+      "frequency_mhz": 1600.0,
+      "is_clock": false,
+      "is_reset": false,
+      "timing_critical": true
+    },
+    {
+      "name": "mem_addr_bus",
+      "source_partition": "COMPUTE",
+      "sink_partitions": ["MEMORY"],
+      "width": 40,
+      "frequency_mhz": 1600.0,
+      "is_clock": false,
+      "is_reset": false,
+      "timing_critical": true
+    },
+    {
+      "name": "mem_ctrl",
+      "source_partition": "COMPUTE",
+      "sink_partitions": ["MEMORY"],
+      "width": 8,
+      "frequency_mhz": 1600.0,
+      "is_clock": false,
+      "is_reset": false,
+      "timing_critical": false
+    },
+    {
+      "name": "mem_read_data",
+      "source_partition": "MEMORY",
+      "sink_partitions": ["COMPUTE"],
+      "width": 256,
+      "frequency_mhz": 1600.0,
+      "is_clock": false,
+      "is_reset": false,
+      "timing_critical": true
+    },
+    {
+      "name": "io_tx_data",
+      "source_partition": "COMPUTE",
+      "sink_partitions": ["IO"],
+      "width": 64,
+      "frequency_mhz": 1000.0,
+      "is_clock": false,
+      "is_reset": false,
+      "timing_critical": false
+    },
+    {
+      "name": "io_rx_data",
+      "source_partition": "IO",
+      "sink_partitions": ["COMPUTE"],
+      "width": 64,
+      "frequency_mhz": 1000.0,
+      "is_clock": false,
+      "is_reset": false,
+      "timing_critical": false
+    },
+    {
+      "name": "io_status",
+      "source_partition": "IO",
+      "sink_partitions": ["COMPUTE"],
+      "width": 16,
+      "frequency_mhz": 100.0,
+      "is_clock": false,
+      "is_reset": false,
+      "timing_critical": false
+    },
+    {
+      "name": "cpu_internal_bus",
+      "source_partition": "COMPUTE",
+      "sink_partitions": ["COMPUTE"],
+      "width": 512,
+      "frequency_mhz": 3200.0,
+      "is_clock": false,
+      "is_reset": false,
+      "timing_critical": true
+    },
+    {
+      "name": "mem_internal_refresh",
+      "source_partition": "MEMORY",
+      "sink_partitions": ["MEMORY"],
+      "width": 4,
+      "frequency_mhz": 400.0,
+      "is_clock": false,
+      "is_reset": false,
+      "timing_critical": false
+    },
+    {
+      "name": "io_internal_ctrl",
+      "source_partition": "IO",
+      "sink_partitions": ["IO"],
+      "width": 8,
+      "frequency_mhz": 200.0,
+      "is_clock": false,
+      "is_reset": false,
+      "timing_critical": false
+    }
+  ],
+  "interfaces": [
+    {
+      "name": "COMPUTE_MEMORY_UCIe",
+      "partition_a": "COMPUTE",
+      "partition_b": "MEMORY",
+      "max_bandwidth_gbps": 2048.0,
+      "latency_ns": 5.0,
+      "protocol": "UCIe",
+      "pin_count": 2048
+    },
+    {
+      "name": "COMPUTE_IO_UCIe",
+      "partition_a": "COMPUTE",
+      "partition_b": "IO",
+      "max_bandwidth_gbps": 512.0,
+      "latency_ns": 8.0,
+      "protocol": "UCIe",
+      "pin_count": 512
+    }
+  ]
+}
